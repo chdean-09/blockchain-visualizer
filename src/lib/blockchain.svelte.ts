@@ -3,11 +3,10 @@ import SHA256 from 'crypto-js/sha256';
 export class Block {
   public index: number;
   public timestamp: number;
-  public data: string;
-  public previousHash: string;
-  public hash: string;
-  public nonce: number;
-  public isValid: boolean = true; 
+  public data: string = $state('');
+  public previousHash: string = $state('');
+  public hash: string = $state('');
+  public nonce: number = $state(0);
 
   constructor(index: number, timestamp: number, data: string, previousHash: string = '') {
     this.index = index;
@@ -28,21 +27,36 @@ export class Block {
     ).toString();
   }
 
-  mineBlock(difficulty: number): void {
+  async mineBlock(difficulty: number, onProgress?: () => void): Promise<void> {
+    const target = Array(difficulty + 1).join('0');
+    const updateSpeedArray = [1, 2, 50, 1000];
+
+    while (this.hash.substring(0, difficulty) !== target) {
+      this.nonce++;
+      this.hash = this.calculateHash();
+
+      if (this.nonce % updateSpeedArray[difficulty - 1] === 0) {
+        if (onProgress) onProgress();
+        await new Promise(resolve => setTimeout(resolve, 1));
+      }
+    }
+
+    console.log("Block mined: " + this.hash);
+  }
+
+  mineBlockSync(difficulty: number) {
     const target = Array(difficulty + 1).join('0');
 
     while (this.hash.substring(0, difficulty) !== target) {
       this.nonce++;
       this.hash = this.calculateHash();
     }
-
-    console.log("Block mined: " + this.hash);
   }
 }
 
 export class Blockchain {
-  public chain: Block[];
-  public difficulty: number;
+  public chain: Block[] = $state([]);
+  public difficulty: number = $state(2);
 
   constructor() {
     this.chain = [this.createGenesisBlock()];
@@ -50,7 +64,7 @@ export class Blockchain {
   }
 
   createGenesisBlock(): Block {
-    return new Block(0, Date.now(), "Genesis Block", "0");
+    return new Block(0, Date.now(), 'Genesis Block', '0');
   }
 
   getLatestBlock(): Block {
@@ -58,16 +72,14 @@ export class Blockchain {
   }
 
   addBlock(data: string): void {
-    const previousBlock = this.getLatestBlock();
-    
     const newBlock = new Block(
       this.chain.length,
       Date.now(),
       data,
-      previousBlock.hash
+      this.getLatestBlock().hash
     );
 
-    newBlock.mineBlock(this.difficulty);
+    newBlock.mineBlockSync(this.difficulty);
     this.chain.push(newBlock);
   }
 

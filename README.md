@@ -91,7 +91,7 @@ npm run build
 - **Build Tool**: Vite
 - **Cryptography**: crypto-js (SHA-256)
 - **Styling**: Tailwind CSS
-- **UI framework** - Skeleton.dev unfirom design language
+- **UI framework** - Skeleton.dev uniform design language
 
 ## 📝 Project Structure
 
@@ -108,7 +108,7 @@ blockchain-visualizer/
 │   └── main.ts                # Entry point
 ├── index.html
 ├── package.json
-├── vite.config.js
+├── vite.config.ts
 └── README.md
 ```
 
