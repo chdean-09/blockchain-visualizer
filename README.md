@@ -101,7 +101,7 @@ blockchain-visualizer/
 │   └── blockchain-logo.svg
 ├── src/
 │   ├── lib/
-│   │   ├── blockchain.ts      # Core blockchain logic
+│   │   ├── blockchain.svelte.ts      # Core blockchain logic
 │   │   └── BlockCard.svelte   # Individual block component
 │   ├── App.svelte             # Main application
 │   ├── app.css                # Global styles

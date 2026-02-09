@@ -20,15 +20,14 @@
   let isMining = $state(false);
   let displayNonce = $state(block.nonce);
 
-  // Link valid: previous hash matches the actual hash of the previous block
   let isLinkValid = $derived(
     prevBlock ? block.previousHash === prevBlock.hash : true,
   );
-  // Integrity valid: stored hash matches recalculated hash (detects data tampering)
+
   let isIntegrityValid = $derived(block.hash === block.calculateHash());
-  // Overall validity
+
   let isValid = $derived(isLinkValid && isIntegrityValid);
-  // Was this block properly mined to meet difficulty?
+
   let isDifficultyValid = $derived(
     block.hash.substring(0, difficulty) === Array(difficulty + 1).join("0"),
   );
@@ -36,13 +35,13 @@
   // Border logic:
   // - Red if block is invalid (tampered or broken link)
   // - Green if valid AND meets difficulty
-  // - No colored border otherwise (unmined genesis on fresh load)
+  // - No colored border otherwise if genesis block
   let borderClass = $derived(
-    !isValid
-      ? "border-error-700"
-      : isDifficultyValid
+    block.index !== 0
+      ? isDifficultyValid
         ? "border-success-700"
-        : "",
+        : "border-error-700"
+      : "",
   );
 
   async function handleMine() {
@@ -61,8 +60,6 @@
   }
 
   function handleInput() {
-    // Recalculate hash with the new data so hash display updates,
-    // but next block's previousHash still points to the OLD hash → chain breaks
     block.nonce = 0;
     displayNonce = 0;
     block.hash = block.calculateHash();
@@ -82,7 +79,7 @@
   <header class="flex justify-between items-center mb-4">
     <div class="flex items-center gap-2">
       <h3 class="h3 font-bold">Block {block.index + 1}</h3>
-      {#if !isValid}
+      {#if !isDifficultyValid && block.index !== 0}
         <span class="badge text-error-400">INVALID</span>
       {/if}
     </div>
@@ -111,9 +108,7 @@
           <span class="text-surface-200 block uppercase tracking-wider mb-2">
             Previous Hash
           </span>
-          <span
-            class="break-all"
-          >
+          <span class="break-all">
             {block.previousHash}
           </span>
         </div>
@@ -145,7 +140,7 @@
 
   <footer class="mt-4 flex justify-end">
     <button
-      class="btn variant-filled-primary w-full"
+      class="btn preset-tonal-secondary w-full"
       onclick={handleMine}
       disabled={isMining}
     >
