@@ -7,6 +7,8 @@ export class Block {
   public previousHash: string = $state('');
   public hash: string = $state('');
   public nonce: number = $state(0);
+  public mineTime: number | null = $state(null);
+  public isMining: boolean = $state(false);
 
   constructor(index: number, timestamp: number, data: string, previousHash: string = '') {
     this.index = index;
@@ -29,7 +31,7 @@ export class Block {
 
   async mineBlock(difficulty: number, onProgress?: () => void): Promise<void> {
     const target = Array(difficulty + 1).join('0');
-    const updateSpeedArray = [1, 2, 50, 1000];
+    const updateSpeedArray = [1, 3, 50, 500];
 
     while (this.hash.substring(0, difficulty) !== target) {
       this.nonce++;
@@ -40,8 +42,6 @@ export class Block {
         await new Promise(resolve => setTimeout(resolve, 1));
       }
     }
-
-    console.log("Block mined: " + this.hash);
   }
 
   mineBlockSync(difficulty: number) {
@@ -64,7 +64,10 @@ export class Blockchain {
   }
 
   createGenesisBlock(): Block {
-    return new Block(0, Date.now(), 'Genesis Block', '0');
+    const genesisBlock = new Block(0, Date.now(), 'Genesis Block', '0');
+
+    genesisBlock.mineBlockSync(this.difficulty);
+    return genesisBlock;
   }
 
   getLatestBlock(): Block {
@@ -83,10 +86,14 @@ export class Blockchain {
     this.chain.push(newBlock);
   }
 
-  isChainValid(): boolean {
+  isChainValid(difficulty: number): boolean {
     for (let i = 1; i < this.chain.length; i++) {
       const currentBlock = this.chain[i];
       const previousBlock = this.chain[i - 1];
+
+      if (currentBlock.hash.substring(0, difficulty) !== Array(difficulty + 1).join('0')) {
+        return false;
+      }
 
       if (currentBlock.hash !== currentBlock.calculateHash()) {
         return false;

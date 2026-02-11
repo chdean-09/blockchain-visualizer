@@ -1,52 +1,56 @@
 # Blockchain Visualizer
 
-A stunning, interactive web application that visualizes how blockchain technology works.
+A stunning, interactive web application that visualizes how blockchain technology works. Built with Svelte 5, this educational tool demonstrates the fundamental concepts of blockchain including cryptographic hashing, proof-of-work mining, and chain integrity validation.
+
+![Desktop View](public/screenshots/desktop-demo.png)
+*Desktop view with horizontal layout showing the complete blockchain*
+
+![Mobile View](public/screenshots/mobile-demo.png)
+*Mobile-responsive vertical layout with floating action buttons*
 
 ## Features
 
 ### Core Features
-- **Visual Blockchain Display** - See each block with all 6 required fields:
-  - Block number
-  - Timestamp
-  - Data (transaction info)
-  - Previous hash (truncated)
-  - Nonce
-  - Hash (truncated)
+- **Visual Blockchain Display** - Each block displays all essential fields:
+  - Block number with special Genesis Block indicator
+  - Timestamp showing when the block was created
+  - Editable data field for transaction information
+  - Previous block's hash (cryptographically linked)
+  - Nonce value showing proof-of-work attempts
+  - Current block hash with validity color coding
 
-- **Mining Functionality** - Mine new blocks with visual feedback:
-  - Real-time mining process with spinner
-  - Mining time display
-  - Configurable difficulty (1-4)
-  - Auto-mine feature for multiple blocks
+- **Interactive Mining** - Experience real proof-of-work mining:
+  - Live mining animation with nonce updates
+  - Mining time display (milliseconds to seconds)
+  - Adjustable difficulty (1-4 leading zeros)
+  - Progress indicators during mining operations
+  - Auto-mine feature to mine all blocks sequentially
 
-- **Validation Indicator** - Large, clear chain status:
-  - Green "VALID" indicator when chain is intact
-  - Red "INVALID" indicator when chain is broken
-  - Auto-updates on any change
+- **Chain Validation** - Real-time integrity checking:
+  - Green borders indicate valid blocks with correct hash difficulty
+  - Red borders highlight invalid or tampered blocks
+  - Yellow borders show blocks currently being mined
+  - Cascading validation shows how tampering affects downstream blocks
 
-- **Difficulty Selector** - Choose mining difficulty 1-4
-  - Higher difficulty = more leading zeros required
-  - Visual difficulty level indicator
+- **Tampering Demonstration** - Visualize blockchain immutability:
+  - Edit any block's data field to simulate tampering
+  - Watch the hash instantly become invalid
+  - See how tampering breaks all subsequent blocks
+  - Red borders cascade through the broken chain
+  - Demonstrates why blockchain is tamper-evident
 
-### Bonus Features
-- **Tampering Demo** - Edit block data without re-mining
-  - Click "EDIT" on any block
-  - Modify the data
-  - Watch the chain become invalid
-  - Red borders on tampered blocks
+- **Batch Mining** - Efficiently mine multiple blocks:
+  - Auto-mine all invalid blocks in sequence
+  - Real-time progress updates during batch operations
+  - Individual mining time tracking per block
+  - Can be cancelled mid-operation
 
-- **Auto-Mine** - Mine multiple blocks automatically
+- **Visual Hash Linking** - Understand cryptographic connections:
+  - Directional arrows show block relationships
+  - Clear visual flow from genesis to latest block
+  - Animated connections respond to layout changes
+  - Helps visualize the "chain" in blockchaintomatically
   - Shows progress for each block
-  - Displays mining time
-
-- **Mining Statistics**
-  - Total blocks mined counter
-  - Average mining time
-  - Individual block mining times
-
-- **Visual Chain Links** - Animated arrows showing hash connections
-  - Color-coded hash matching
-  - Clear visual flow from block to block
 
 ## Getting Started
 
@@ -77,14 +81,6 @@ npm run dev
 http://localhost:5173
 ```
 
-## Deployment
-
-### GitHub Pages
-```bash
-npm run build
-# Deploy the dist folder to GitHub Pages
-```
-
 ## Technology Stack
 
 - **Framework**: Svelte
@@ -92,25 +88,6 @@ npm run build
 - **Cryptography**: crypto-js (SHA-256)
 - **Styling**: Tailwind CSS
 - **UI framework** - Skeleton.dev uniform design language
-
-## 📝 Project Structure
-
-```
-blockchain-visualizer/
-├── public/
-│   └── blockchain-logo.svg
-├── src/
-│   ├── lib/
-│   │   ├── blockchain.svelte.ts      # Core blockchain logic
-│   │   └── BlockCard.svelte   # Individual block component
-│   ├── App.svelte             # Main application
-│   ├── app.css                # Global styles
-│   └── main.ts                # Entry point
-├── index.html
-├── package.json
-├── vite.config.ts
-└── README.md
-```
 
 ## 📜 License
 
