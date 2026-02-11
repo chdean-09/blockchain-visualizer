@@ -78,7 +78,7 @@ npm run dev
 
 4. Open your browser and navigate to:
 ```
-http://localhost:5173
+http://localhost:5173/blockchain-visualizer/
 ```
 
 ## Technology Stack
